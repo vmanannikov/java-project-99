@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
 	java
 	checkstyle
@@ -55,11 +58,21 @@ dependencies {
 	implementation("net.datafaker:datafaker:2.2.2")
 }
 
+/* Instancio */
+dependencies {
+	implementation("org.instancio:instancio-junit:3.3.1")
+}
+
 /* Spring Tests */
 dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-tasks.withType<Test> {
+tasks.test {
 	useJUnitPlatform()
+	testLogging {
+		exceptionFormat = TestExceptionFormat.FULL
+		events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
+		showStandardStreams = true
+	}
 }

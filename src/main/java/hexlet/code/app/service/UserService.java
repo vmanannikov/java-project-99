@@ -44,10 +44,10 @@ public class UserService {
 
     @Transactional
     public UserDTO createUser(UserCreateDTO userData) {
-        var userDTO = findByEmail(userData.getEmail());
+        //var userDTO = findByEmail(userData.getEmail());
         var user = userMapper.map(userData);
         userRepository.save(user);
-        return userDTO;
+        return userMapper.map(user);
     }
 
     @Transactional

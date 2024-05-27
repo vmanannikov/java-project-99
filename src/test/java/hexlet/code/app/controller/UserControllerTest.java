@@ -1,5 +1,12 @@
-package hexlet.code.app;
+package hexlet.code.app.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.app.mapper.UserMapper;
+import hexlet.code.app.controller.util.ModelGenerator;
+import hexlet.code.app.model.User;
+import hexlet.code.app.repository.UserRepository;
+import org.instancio.Instancio;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +21,31 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
-@SpringBootTest(classes = UserControllerTest.class)
+@SpringBootTest
 @AutoConfigureMockMvc
 class UserControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	private ObjectMapper om;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private ModelGenerator modelGenerator;
+
+	@Autowired
+	private UserMapper userMapper;
+
+	private User testUser;
+
+	@BeforeEach
+	public void setUp() {
+		var user = Instancio.of(modelGenerator.getUserModel()).create();
+		userRepository.save(user);
+	}
 
 	@Test
 	@Order(1)
