@@ -19,7 +19,6 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
-          build-root-directory: java-project-99
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
         env:
