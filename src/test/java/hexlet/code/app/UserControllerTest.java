@@ -14,17 +14,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
-@SpringBootTest
+@SpringBootTest(classes = UserControllerTest.class)
 @AutoConfigureMockMvc
 class UserControllerTest {
-
 	@Autowired
 	private MockMvc mockMvc;
 
 	@Test
 	@Order(1)
 	void testCreateUser() throws Exception {
-		String userJson = "{\"email\": \"manhetan@gmail.com\", \"firstName\": \"Vadim\", \"lastName\": \"Manannikov\", \"password\": \"qwerty1234\"}";
+		String userJson = "{\"email\": \"manhetan@gmail.com\", "
+				+ "\"firstName\": \"Vadim\", \"lastName\": \"Manannikov\", "
+				+ "\"password\": \"qwerty1234\"}";
 		mockMvc.perform(post("/api/users")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(userJson))
