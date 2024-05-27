@@ -1,6 +1,6 @@
 package hexlet.code.app.component;
 
-import hexlet.code.app.model.User;
+import hexlet.code.app.dto.user.UserCreateDTO;
 import hexlet.code.app.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +21,9 @@ public class DataInit implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         var email = "hexlet@example.com";
-        var userData = new User();
+        var userData = new UserCreateDTO();
         userData.setEmail(email);
-        userData.setPasswordDigest(passwordEncoder.encode("qwerty"));
-        userService.create(userData);
-
-/*        var user = userService.findByEmail(email).get();
-
-        var faker = new Faker();
-        IntStream.range(1, 10).forEach(i -> {
-            var user = new User();
-            post.setName(faker.book().title());
-            var paragraphs = faker.lorem().paragraphs(5);
-            post.setBody(String.join("\n", paragraphs));
-            post.setSlug(faker.internet().slug());
-            post.setAuthor(user);
-            userService.create(user);
-        });*/
+        userData.setPassword(passwordEncoder.encode("qwerty"));
+        userService.createUser(userData);
     }
 }

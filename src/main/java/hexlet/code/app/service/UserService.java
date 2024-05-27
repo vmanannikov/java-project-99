@@ -1,47 +1,67 @@
 package hexlet.code.app.service;
 
-import hexlet.code.app.model.User;
+import hexlet.code.app.dto.user.UserCreateDTO;
+import hexlet.code.app.dto.user.UserDTO;
+import hexlet.code.app.dto.user.UserUpdateDTO;
+import hexlet.code.app.exception.ResourceNotFoundException;
+
+import hexlet.code.app.mapper.UserMapper;
 import hexlet.code.app.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    private final UserMapper userMapper;
+
+    public UserService(UserMapper userMapper, UserRepository userRepository) {
+        this.userMapper = userMapper;
+        this.userRepository = userRepository;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public UserDTO findById(Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
+        return userMapper.map(user);
     }
 
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public List<UserDTO> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::map)
+                .toList();
+    }
+
+    public UserDTO findByEmail(String email) {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found by: " + email));
+        return userMapper.map(user);
     }
 
     @Transactional
-    public void create(User user) {
-        user.setCreatedAt(LocalDate.now());
-        user.setUpdatedAt(LocalDate.now());
+    public UserDTO createUser(UserCreateDTO userData) {
+        var userDTO = findByEmail(userData.getEmail());
+        var user = userMapper.map(userData);
         userRepository.save(user);
+        return userDTO;
     }
 
     @Transactional
-    public void update(User user) {
-        user.setUpdatedAt(LocalDate.now());
+    public UserDTO updateUser(UserUpdateDTO userData, Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
+
+        userMapper.update(userData, user);
         userRepository.save(user);
+        return userMapper.map(user);
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 }
