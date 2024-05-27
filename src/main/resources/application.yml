@@ -8,8 +8,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-  profiles:
-    default: development
 
 server:
   port: ${PORT}
