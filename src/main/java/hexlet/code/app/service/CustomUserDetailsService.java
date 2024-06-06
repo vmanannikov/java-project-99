@@ -12,47 +12,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsManager {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public void createUser(UserDetails userDetails) {
-        var user = new User();
-        user.setEmail(userDetails.getUsername());
-        var hashedPassword = passwordEncoder.encode(userDetails.getPassword());
-        user.setPasswordDigest(hashedPassword);
-        userRepository.save(user);
-    }
-
-    @Override
-    public void updateUser(UserDetails userDetails) {
-        var user = userRepository.findByEmail(userDetails.getUsername());
-        if (user != null) {
-            user.get().setEmail(userDetails.getUsername());
-            user.get().setPasswordDigest(passwordEncoder.encode(userDetails.getPassword()));
-            userRepository.save(user.get());
-        }
-    }
-
-    @Override
-    public void deleteUser(String email) {
-        var user = userRepository.findByEmail(email);
-        if (user != null) {
-            userRepository.delete(user.get());
-        }
-    }
-
-    @Override
-    public void changePassword(String oldPassword, String newPassword) {
-
-    }
-
-    @Override
-    public boolean userExists(String username) {
-        return false;
+    public CustomUserDetailsService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -60,5 +26,38 @@ public class CustomUserDetailsService implements UserDetailsManager {
         var user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return user;
+    }
+
+    @Override
+    public void createUser(UserDetails userData) {
+        var user = new User();
+        user.setEmail(userData.getUsername());
+        var hashedPassword = passwordEncoder.encode(userData.getPassword());
+        user.setPassword(hashedPassword);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUser(UserDetails user) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+    }
+
+    @Override
+    public void deleteUser(String username) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+    }
+
+    @Override
+    public void changePassword(String oldPassword, String newPassword) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'changePassword'");
+    }
+
+    @Override
+    public boolean userExists(String username) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'userExists'");
     }
 }

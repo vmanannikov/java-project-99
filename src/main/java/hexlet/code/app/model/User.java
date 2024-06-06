@@ -20,6 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Getter
@@ -48,10 +49,7 @@ public class User implements UserDetails, BaseEntity {
 
     @Size(min = 3)
     @Column(name = "password", nullable = false)
-    @Getter(AccessLevel.NONE)
     private String password;
-
-    private String passwordDigest;
 
     @CreatedDate
     @Column(name = "createdAt")
@@ -63,12 +61,12 @@ public class User implements UserDetails, BaseEntity {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return new ArrayList<GrantedAuthority>();
     }
 
     @Override
     public String getPassword() {
-        return passwordDigest;
+        return password;
     }
 
     @Override

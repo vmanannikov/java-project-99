@@ -12,12 +12,15 @@ import java.time.temporal.ChronoUnit;
 @Component
 public class JWTUtils {
 
-    @Autowired
     private JwtEncoder jwtEncoder;
+
+    public JWTUtils(JwtEncoder jwtEncoder) {
+        this.jwtEncoder = jwtEncoder;
+    }
 
     public String generateToken(String username) {
         var now = Instant.now();
-        var claims = JwtClaimsSet.builder()
+        JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))

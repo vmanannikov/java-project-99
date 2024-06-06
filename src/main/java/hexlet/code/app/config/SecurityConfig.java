@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,6 +24,11 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@EnableGlobalMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true,
+        prePostEnabled = true
+)
 public class SecurityConfig {
 
     @Autowired
@@ -37,18 +43,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector)
             throws Exception {
-        var mvcMatherBuilder = new MvcRequestMatcher.Builder(introspector);
-        return http
+        return http.headers(headers -> headers.frameOptions().disable()).csrf().disable()
                 .csrf((csrf -> csrf.disable()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers(mvcMatherBuilder.pattern("/api/login")).permitAll()
-                        .requestMatchers(mvcMatherBuilder.pattern("/welcome")).permitAll()
-                        .requestMatchers(mvcMatherBuilder.pattern("/api/pages/*")).permitAll()
-                        .requestMatchers(mvcMatherBuilder.pattern("/api/pages")).permitAll()
-                        .requestMatchers(mvcMatherBuilder.pattern("/")).permitAll()
-                        .requestMatchers(mvcMatherBuilder.pattern("/index.html")).permitAll()
-                        .requestMatchers(mvcMatherBuilder.pattern("/assets/**")).permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/pages/*").permitAll()
+                        .requestMatchers("/api/pages").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/index.html").permitAll()
+                        .requestMatchers("/assets/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(rs -> rs.jwt(jwt -> jwt.decoder(jwtDecoder)))

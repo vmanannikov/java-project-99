@@ -2,9 +2,9 @@ package hexlet.code.app.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.mapper.UserMapper;
-import hexlet.code.app.controller.util.ModelGenerator;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
+import hexlet.code.app.util.ModelGenerator;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;

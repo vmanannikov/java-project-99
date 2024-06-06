@@ -1,4 +1,4 @@
-package hexlet.code.app.controller.util;
+package hexlet.code.app.util;
 
 import hexlet.code.app.model.User;
 import jakarta.annotation.PostConstruct;
