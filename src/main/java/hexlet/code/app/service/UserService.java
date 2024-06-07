@@ -8,6 +8,7 @@ import hexlet.code.app.exception.ResourceNotFoundException;
 import hexlet.code.app.mapper.UserMapper;
 import hexlet.code.app.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,9 +20,12 @@ public class UserService {
 
     private final UserMapper userMapper;
 
-    public UserService(UserMapper userMapper, UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserMapper userMapper, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDTO findById(Long id) {
@@ -47,6 +51,8 @@ public class UserService {
     public UserDTO createUser(UserCreateDTO userData) {
         //var userDTO = findByEmail(userData.getEmail());
         var user = userMapper.map(userData);
+        var encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
         userRepository.save(user);
         return userMapper.map(user);
     }

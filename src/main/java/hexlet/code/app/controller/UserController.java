@@ -32,7 +32,7 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @GetMapping("")
+    @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<UserDTO>> index() {
         var users = userService.findAll();

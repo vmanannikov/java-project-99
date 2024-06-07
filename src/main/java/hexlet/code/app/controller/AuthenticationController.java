@@ -1,6 +1,6 @@
 package hexlet.code.app.controller;
 
-import hexlet.code.app.dto.user.AuthRequestDTO;
+import hexlet.code.app.dto.auth.AuthRequestDTO;
 import hexlet.code.app.util.JWTUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

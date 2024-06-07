@@ -1,4 +1,4 @@
-package hexlet.code.app.dto.user;
+package hexlet.code.app.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
