@@ -7,7 +7,7 @@ import hexlet.code.app.exception.ResourceNotFoundException;
 
 import hexlet.code.app.mapper.UserMapper;
 import hexlet.code.app.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +16,14 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    private final UserMapper userMapper;
+    @Autowired
+    private UserMapper userMapper;
 
-    private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserMapper userMapper, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userMapper = userMapper;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserDTO findById(Long id) {
         var user = userRepository.findById(id)
@@ -47,7 +44,6 @@ public class UserService {
         return userMapper.map(user);
     }
 
-    @Transactional
     public UserDTO createUser(UserCreateDTO userData) {
         //var userDTO = findByEmail(userData.getEmail());
         var user = userMapper.map(userData);
@@ -57,7 +53,6 @@ public class UserService {
         return userMapper.map(user);
     }
 
-    @Transactional
     public UserDTO updateUser(UserUpdateDTO userData, Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
@@ -67,7 +62,6 @@ public class UserService {
         return userMapper.map(user);
     }
 
-    @Transactional
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

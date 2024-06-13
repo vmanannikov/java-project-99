@@ -53,6 +53,11 @@ dependencies {
 	implementation("com.h2database:h2:2.2.224")
 }
 
+/* Postgresql */
+//dependencies {
+//	implementation("org.postgresql:42.7.2")
+//}
+
 /* Faker */
 dependencies {
 	implementation("net.datafaker:datafaker:2.2.2")
@@ -65,6 +70,7 @@ dependencies {
 
 /* Spring Tests */
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 }
