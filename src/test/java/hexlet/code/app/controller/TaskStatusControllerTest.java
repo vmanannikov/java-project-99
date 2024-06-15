@@ -50,7 +50,7 @@ public class TaskStatusControllerTest {
 
     @BeforeEach
     public void setStatus() {
-        testStatus = Instancio.of(modelsGenerator.getTestStatus()).create();
+        testStatus = Instancio.of(modelsGenerator.getTaskStatusModel()).create();
         token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
 
     }

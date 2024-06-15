@@ -1,9 +1,9 @@
 package hexlet.code.app.controller;
 
-import hexlet.code.app.dto.user.UserCreateDTO;
-import hexlet.code.app.dto.user.UserDTO;
-import hexlet.code.app.dto.user.UserUpdateDTO;
-import hexlet.code.app.service.UserService;
+import hexlet.code.app.dto.label.LabelCreateDTO;
+import hexlet.code.app.dto.label.LabelDTO;
+import hexlet.code.app.dto.label.LabelUpdateDTO;
+import hexlet.code.app.service.LabelService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,42 +21,42 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping(path = "/api/labels")
+public class LabelController {
 
     @Autowired
-    private UserService userService;
-
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public UserDTO getUser(@PathVariable Long id) {
-        return userService.findById(id);
-    }
+    private LabelService labelService;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<UserDTO>> index() {
-        var users = userService.findAll();
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("X-Total-Count", String.valueOf(users.size()))
-                .body(users);
+    public ResponseEntity<List<LabelDTO>> index() {
+        var result = labelService.getAll();
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(result.size()))
+                .body(result);
     }
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO create(@Valid @RequestBody UserCreateDTO userData) {
-        return userService.createUser(userData);
+    public LabelDTO create(@Valid @RequestBody LabelCreateDTO labelData) {
+        return labelService.create(labelData);
     }
 
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDTO update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO userData) {
-        return userService.updateUser(userData, id);
+    public LabelDTO update(@Valid @RequestBody LabelUpdateDTO labelData, @PathVariable Long id) {
+        return labelService.update(labelData, id);
+    }
+
+    @GetMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public LabelDTO show(@PathVariable Long id) {
+        return labelService.findById(id);
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        userService.deleteUser(id);
+    public void destroy(@PathVariable Long id) {
+        labelService.delete(id);
     }
 }

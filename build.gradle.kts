@@ -8,6 +8,7 @@ plugins {
 	id("org.springframework.boot") version "3.2.5"
 	id("io.spring.dependency-management") version "1.1.4"
 	id("com.github.ben-manes.versions") version "0.50.0"
+	id("io.sentry.jvm.gradle") version "4.7.1"
 }
 
 group = "hexlet.code"
@@ -19,6 +20,12 @@ java {
 
 repositories {
 	mavenCentral()
+}
+
+/* Swagger */
+dependencies {
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+	implementation("org.springdoc:springdoc-openapi-ui:1.8.0")
 }
 
 /* Spring */
@@ -54,9 +61,9 @@ dependencies {
 }
 
 /* Postgresql */
-//dependencies {
-//	implementation("org.postgresql:42.7.2")
-//}
+dependencies {
+	runtimeOnly("org.postgresql:postgresql")
+}
 
 /* Faker */
 dependencies {
@@ -81,5 +88,21 @@ tasks.test {
 		exceptionFormat = TestExceptionFormat.FULL
 		events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
 		showStandardStreams = true
+	}
+}
+
+sentry {
+	// Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+	// This enables source context, allowing you to see your source
+	// code as part of your stack traces in Sentry.
+	includeSourceContext = true
+
+	org = "vadim-manannikov"
+	projectName = "java-project-99"
+	authToken = System.getenv("SENTRY_AUTH_TOKEN")
+
+	// Automatically adds Sentry dependencies to your project.
+	autoInstallation {
+		enabled.set(true)
 	}
 }
