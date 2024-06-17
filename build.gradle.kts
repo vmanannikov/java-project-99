@@ -82,6 +82,11 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 }
 
+/* JSON JUnit */
+dependencies {
+	testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.7")
+}
+
 tasks.test {
 	useJUnitPlatform()
 	testLogging {
@@ -89,6 +94,10 @@ tasks.test {
 		events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
 		showStandardStreams = true
 	}
+}
+
+tasks.sentryBundleSourcesJava {
+	enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
 }
 
 sentry {
