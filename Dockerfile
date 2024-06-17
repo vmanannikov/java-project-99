@@ -20,7 +20,7 @@ WORKDIR .
 
 COPY ./ .
 
-RUN gradle installDist
+RUN ./gradlew installDist
 
 EXPOSE 8080
 
