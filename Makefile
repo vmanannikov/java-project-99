@@ -4,7 +4,10 @@ update-dependency:
 	./gradlew dependencyUpdates -Drevision=release
 
 run-development:
-	./gradlew run
+	./gradlew run --args='--spring.profiles.active=development'
+
+run-prod:
+	./gradlew bootRun
 
 setup:
 	./gradlew wrapper --gradle-version 8.5
@@ -14,12 +17,6 @@ clean:
 
 build:
 	./gradlew clean build
-
-install:
-	./gradlew clean installDist
-
-setup:
-	./gradlew wrapper --gradle-version 8.5
 
 lint:
 	./gradlew checkstyleMain checkstyleTest

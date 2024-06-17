@@ -2,8 +2,9 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-	java
+	application
 	checkstyle
+	jacoco
 	id("io.freefair.lombok") version "8.6"
 	id("org.springframework.boot") version "3.2.5"
 	id("io.spring.dependency-management") version "1.1.4"
@@ -13,6 +14,10 @@ plugins {
 
 group = "hexlet.code"
 version = "0.0.1-SNAPSHOT"
+
+application {
+	mainClass.set("hexlet.code.app.AppApplication")
+}
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_21
@@ -101,17 +106,8 @@ tasks.sentryBundleSourcesJava {
 }
 
 sentry {
-	// Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
-	// This enables source context, allowing you to see your source
-	// code as part of your stack traces in Sentry.
 	includeSourceContext = true
-
 	org = "vadim-manannikov"
-	projectName = "java-project-99"
+	projectName = "java-spring"
 	authToken = System.getenv("SENTRY_AUTH_TOKEN")
-
-	// Automatically adds Sentry dependencies to your project.
-	autoInstallation {
-		enabled.set(true)
-	}
 }

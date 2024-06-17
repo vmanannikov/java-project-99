@@ -12,10 +12,8 @@ RUN wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-b
 
 WORKDIR .
 
-COPY ./ .
+COPY / .
 
 RUN ./gradlew bootRun
-
-EXPOSE 8080
 
 CMD ./build/install/app/bin/app
