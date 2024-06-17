@@ -14,7 +14,7 @@ WORKDIR .
 
 COPY ./ .
 
-RUN ./gradlew installDist
+RUN ./gradlew bootRun
 
 EXPOSE 8080
 
