@@ -14,7 +14,7 @@ rsa:
   public-key: classpath:certs/public.pem
 springdoc:
   swagger-ui:
-    path: /v1/api/taskmanager.html
+    disable-swagger-default-url: true
 sentry:
   dsn: https://89cb59e5066e078f8e3f2554a97c605e@o4507431344996352.ingest.de.sentry.io/4507431381893200
   traces-sample-rate: 1.0

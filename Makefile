@@ -7,10 +7,12 @@ run-development:
 	./gradlew run --args='--spring.profiles.active=development'
 
 run-prod:
-	./gradlew bootRun --args='--spring.profiles.active=production'
+	./gradlew run --args='--spring.profiles.active=production'
 
 setup:
+	npm install
 	./gradlew wrapper --gradle-version 8.5
+	./gradlew build
 
 clean:
 	./gradlew clean
