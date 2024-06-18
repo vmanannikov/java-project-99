@@ -59,10 +59,6 @@ public abstract class TaskMapper {
                 .orElseThrow(() -> new ResourceNotFoundException("Status not found"));
     }
 
-    public List<Label> toEntities(List<Long> labelIds) {
-        return labelRepository.findByIdIn(labelIds);
-    }
-
     public List<Long> toIds(Set<Label> labels) {
         return labels == null
                 ? null

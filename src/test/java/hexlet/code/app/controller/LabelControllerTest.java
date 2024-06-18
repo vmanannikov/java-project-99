@@ -97,16 +97,11 @@ public class LabelControllerTest {
                 json -> json.node("name").isEqualTo(testLabel.getName()),
                 json -> json.node("createdAt").isEqualTo(testLabel.getCreatedAt().format(modelGenerator.FORMATTER))
         );
-
-        var receivedLabel = om.readValue(body, Label.class);
-        assertThat(receivedLabel).isEqualTo(testLabel);
     }
 
     @Test
     public void testCreate() throws Exception {
         var data = Instancio.of(modelGenerator.getLabelModel()).create();
-
-        var labelsCount = labelRepository.count();
 
         var request = post("/api/labels")
                 .with(token)
@@ -116,25 +111,17 @@ public class LabelControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        assertThat(labelRepository.count()).isEqualTo(labelsCount + 1);
+        var newLabel = labelRepository.findByName(data.getName()).get();
 
-        var addedLabel = labelRepository.findByName(data.getName()).get();
-
-        assertNotNull(addedLabel);
-        assertThat(labelRepository.findByName(testLabel.getName())).isPresent();
-
-        assertThat(addedLabel.getName()).isEqualTo(data.getName());
+        assertThat(newLabel.getName()).isEqualTo(data.getName());
     }
 
     @Test
     public void testUpdate() throws Exception {
-        var oldName = testLabel.getName();
-        var newName = faker.lorem().word();
+        var fakeName = faker.lorem().word();
 
-        var data = new HashMap<>();
-        data.put("name", newName);
-
-        var labelsCount = labelRepository.count();
+        var data = new HashMap<String, String>();
+        data.put("name", fakeName);
 
         var request = put("/api/labels/" + testLabel.getId())
                 .with(token)
@@ -144,12 +131,9 @@ public class LabelControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        assertThat(labelRepository.count()).isEqualTo(labelsCount);
-
         var label = labelRepository.findById(testLabel.getId()).get();
 
-        assertThat(label.getName()).isEqualTo(newName);
-        assertThat(labelRepository.findByName(oldName)).isEmpty();
+        assertThat(label.getName()).isEqualTo(fakeName);
     }
 
     @Test

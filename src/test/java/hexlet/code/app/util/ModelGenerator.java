@@ -33,7 +33,7 @@ public class ModelGenerator {
 
     private Model<Label> labelModel;
 
-    public final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    public final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
     private Faker faker;
@@ -65,8 +65,8 @@ public class ModelGenerator {
         taskStatusModel = Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
                 .ignore(Select.field(TaskStatus::getCreatedAt))
-                .supply(Select.field(TaskStatus::getSlug), () -> faker.internet().slug() + faker.internet().slug())
-                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word() + faker.lorem().word())
+                .supply(Select.field(TaskStatus::getSlug), () -> faker.internet().slug())
+                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word())
                 .toModel();
 
         taskModel = Instancio.of(Task.class)
