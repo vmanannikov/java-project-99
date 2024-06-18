@@ -2,7 +2,6 @@ package hexlet.code.app.service;
 
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

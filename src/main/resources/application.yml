@@ -4,6 +4,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  profiles:
+    default: development
   output:
     ansi:
       enabled: always
