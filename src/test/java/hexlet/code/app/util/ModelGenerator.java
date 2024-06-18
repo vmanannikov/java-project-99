@@ -33,7 +33,7 @@ public class ModelGenerator {
 
     private Model<Label> labelModel;
 
-    public final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
     private Faker faker;

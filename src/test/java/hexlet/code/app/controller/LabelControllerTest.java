@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.model.Label;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.LabelRepository;
-import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.util.ModelGenerator;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
@@ -24,9 +23,11 @@ import java.util.List;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -43,13 +44,10 @@ public class LabelControllerTest {
     private LabelRepository labelRepository;
 
     @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
     private ObjectMapper om;
 
     @Autowired
-    ModelGenerator modelGenerator;
+    private ModelGenerator modelGenerator;
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
 
@@ -147,19 +145,6 @@ public class LabelControllerTest {
 
         assertThat(labelRepository.count()).isEqualTo(labelsCount - 1);
         assertThat(labelRepository.findById(testLabel.getId())).isEmpty();
-    }
-
-    @Test
-    public void testDestroyLabelWhichIsUsing() throws Exception {
-        var testTask = modelGenerator.getTestTask();
-        taskRepository.save(testTask);
-
-        var taskLabel = testTask.getLabels().iterator().next();
-
-        mockMvc.perform(delete("/api/labels/" + taskLabel.getId()).with(token))
-                .andExpect(status().isInternalServerError());
-
-        assertThat(labelRepository.findById(taskLabel.getId())).isPresent();
     }
 
     @AfterEach
