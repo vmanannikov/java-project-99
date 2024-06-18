@@ -33,7 +33,7 @@ public class ModelGenerator {
 
     private Model<Label> labelModel;
 
-    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    public final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Autowired
     private Faker faker;
@@ -98,22 +98,19 @@ public class ModelGenerator {
 
     @Bean
     public Task getTestTask() {
-        var testTask = Instancio.of(getTaskModel())
-                .create();
+        var testTask = Instancio.of(getTaskModel()).create();
 
-        var testUser = Instancio.of(getUserModel())
-                .create();
+        var testUser = Instancio.of(getUserModel()).create();
         userRepository.save(testUser);
         testTask.setAssignee(testUser);
 
-        var testTaskStatus = Instancio.of(getTaskStatusModel())
-                .create();
+        var testTaskStatus = Instancio.of(getTaskStatusModel()).create();
         taskStatusRepository.save(testTaskStatus);
         testTask.setTaskStatus(testTaskStatus);
 
-        var testLabel = Instancio.of(getLabelModel())
-                .create();
+        var testLabel = Instancio.of(getLabelModel()).create();
         labelRepository.save(testLabel);
+
         testTask.getLabels().add(testLabel);
         testLabel.getTasks().add(testTask);
 

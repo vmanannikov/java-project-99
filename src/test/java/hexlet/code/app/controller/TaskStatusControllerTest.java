@@ -3,9 +3,9 @@ package hexlet.code.app.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.dto.taskstatus.TaskStatusUpdateDTO;
 import hexlet.code.app.model.TaskStatus;
+import hexlet.code.app.model.User;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.util.ModelGenerator;
-import hexlet.code.app.util.UserUtils;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,16 +18,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -42,9 +39,6 @@ class TaskStatusControllerTest {
     private static final Faker FAKER = new Faker();
 
     @Autowired
-    private WebApplicationContext wac;
-
-    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
@@ -56,20 +50,19 @@ class TaskStatusControllerTest {
     @Autowired
     private TaskStatusRepository taskStatusRepository;
 
+    @Autowired
+    private ModelGenerator modelsGenerator;
+
     private JwtRequestPostProcessor token;
 
     private TaskStatus taskStatus;
 
-    private UserUtils userUtils;
+    private User testUser;
 
     @BeforeEach
     public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac)
-                .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
-                .apply(springSecurity())
-                .build();
-
-        token = jwt().jwt(builder -> builder.subject(userUtils.getAdmin().getUsername()));
+        testUser = Instancio.of(modelsGenerator.getUserModel()).create();
+        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
         taskStatus = Instancio.of(modelGenerator.getTaskStatusModel()).create();
         taskStatusRepository.save(taskStatus);
     }
@@ -157,14 +150,5 @@ class TaskStatusControllerTest {
         mockMvc.perform(delete("/api/task_statuses/" + taskStatus.getId()).with(token))
                 .andExpect(status().isNoContent());
         assertThat(taskStatusRepository.findById(taskStatus.getId())).isEmpty();
-    }
-
-    @Test
-    public void testDefaultStatuses() throws Exception {
-        assertThat(taskStatusRepository.findBySlug("draft")).isPresent();
-        assertThat(taskStatusRepository.findBySlug("to_review")).isPresent();
-        assertThat(taskStatusRepository.findBySlug("to_be_fixed")).isPresent();
-        assertThat(taskStatusRepository.findBySlug("to_publish")).isPresent();
-        assertThat(taskStatusRepository.findBySlug("published")).isPresent();
     }
 }

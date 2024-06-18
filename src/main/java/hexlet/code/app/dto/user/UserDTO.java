@@ -18,6 +18,8 @@ public class UserDTO {
 
     private String lastName;
 
+    private String password;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate createdAt;
 }

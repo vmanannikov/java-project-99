@@ -4,6 +4,7 @@ import hexlet.code.app.dto.user.UserCreateDTO;
 import hexlet.code.app.model.Label;
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.repository.LabelRepository;
+import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class DataInitializer implements ApplicationRunner {
 
     @Autowired
     private TaskStatusRepository taskStatusRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Autowired
     private LabelRepository labelRepository;
@@ -59,5 +63,7 @@ public class DataInitializer implements ApplicationRunner {
 
         labelRepository.save(l1);
         labelRepository.save(l2);
+
+        var taskMap = new HashMap<String, String>();
     }
 }
