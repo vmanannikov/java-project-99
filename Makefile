@@ -16,7 +16,7 @@ clean:
 	./gradlew clean
 
 build:
-	./gradlew clean build
+	./gradlew clean test build
 
 lint:
 	./gradlew checkstyleMain checkstyleTest
