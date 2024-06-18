@@ -34,12 +34,11 @@ Password: qwerty
 ### Использованные фреймворки
 - **Spring Boot**
 - **Spring Security**
-- **Mapstruct**
+- **MapStruct**
 - **Sentry**
 - **Springdoc Openapi**, **Swagger**
 - **JUnit 5**, **Mockwebserver**, **Datafaker**
 - **Jacoco**
-- **Checkstyle**
 - **H2**, **PostgreSQL**
 - **Docker**
-- [Пример](https://task-manager-rokt.onrender.com) на бесплатный тарифе от **Render**
+- [Пример](https://task-manager-rokt.onrender.com) на бесплатном тарифе от **Render**
