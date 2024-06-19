@@ -94,7 +94,7 @@ class UserControllerTest {
 
         mockMvc.perform(request)
              .andExpect(status().isCreated());
-        var user = userRepository.findByEmail(testUser.getEmail()).orElse(null);
+        var user = userRepository.findByEmail(testUser.getEmail()).get();
         assertNotNull(user);
         assertThat(user.getFirstName()).isEqualTo(testUser.getFirstName());
         assertThat(user.getEmail()).isEqualTo(testUser.getEmail());
