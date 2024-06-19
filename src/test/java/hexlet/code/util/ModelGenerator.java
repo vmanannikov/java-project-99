@@ -16,6 +16,7 @@ import org.instancio.Model;
 import org.instancio.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
@@ -24,6 +25,7 @@ import java.util.HashSet;
 
 @Getter
 @Component
+@Scope("prototype")
 public class ModelGenerator {
     private Model<User> userModel;
 
