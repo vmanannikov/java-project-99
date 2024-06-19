@@ -148,7 +148,7 @@ public class LabelControllerTest {
     }
 
     @AfterEach
-    public void clean() {
+    public void cleanUp() {
         labelRepository.deleteAll();
     }
 }

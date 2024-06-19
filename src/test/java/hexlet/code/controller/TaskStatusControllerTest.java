@@ -8,6 +8,7 @@ import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.util.ModelGenerator;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -64,6 +65,11 @@ class TaskStatusControllerTest {
         token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
         taskStatus = Instancio.of(modelGenerator.getTaskStatusModel()).create();
         taskStatusRepository.save(taskStatus);
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        taskStatusRepository.deleteAll();
     }
 
     @Test
