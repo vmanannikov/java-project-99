@@ -141,7 +141,7 @@ public class TaskControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        var data = new HashMap<String, String>(Map.of("title", "newTitle"));
+        var data = new HashMap<>(Map.of("title", "newTitle"));
 
         MockHttpServletRequestBuilder request = put("/api/tasks/" + testTask.getId()).with(token)
                 .contentType(MediaType.APPLICATION_JSON)
