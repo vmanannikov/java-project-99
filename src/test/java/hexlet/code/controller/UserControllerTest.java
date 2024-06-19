@@ -8,7 +8,6 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +54,6 @@ class UserControllerTest {
         token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
     }
 
-    @Order(1)
     @Test
     public void testIndex() throws Exception {
         userRepository.save(testUser);
@@ -66,7 +64,6 @@ class UserControllerTest {
         assertThatJson(body).isArray();
     }
 
-    @Order(2)
     @Test
     public void testShow() throws Exception {
         userRepository.save(testUser);
@@ -83,7 +80,6 @@ class UserControllerTest {
                 v -> v.node("email").isEqualTo(testUser.getEmail()));
     }
 
-    @Order(3)
     @Test
     public void testCreate() throws Exception {
         var createDTO = userMapper.map(testUser);
@@ -100,7 +96,6 @@ class UserControllerTest {
         assertThat(user.getEmail()).isEqualTo(testUser.getEmail());
     }
 
-    @Order(4)
     @Test
     public void testUpdate() throws Exception {
         userRepository.save(testUser);
@@ -124,7 +119,6 @@ class UserControllerTest {
         assertThat(user.getLastName()).isEqualTo(updateDto.getLastName().get());
     }
 
-    @Order(5)
     @Test
     public void testDelete() throws Exception {
         userRepository.save(testUser);
@@ -137,7 +131,6 @@ class UserControllerTest {
         assertThat(userRepository.existsById(testUser.getId())).isEqualTo(false);
     }
 
-    @Order(6)
     @Test
     public void testIndexWithoutAuth() throws Exception {
         userRepository.save(testUser);
@@ -146,7 +139,6 @@ class UserControllerTest {
 
     }
 
-    @Order(7)
     @Test
     public void testShowWithoutAuth() throws Exception {
         userRepository.save(testUser);
