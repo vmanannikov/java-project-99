@@ -8,9 +8,7 @@ import lombok.Setter;
 @Setter
 public class TaskStatusCreateDTO {
 
-    @NotBlank
     private String name;
 
-    @NotBlank
     private String slug;
 }
