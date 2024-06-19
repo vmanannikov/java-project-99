@@ -16,7 +16,7 @@ public class UserUtils {
     public User getAdmin() {
         var admin = new User();
         admin.setEmail("manhetan@gmail.com");
-        admin.setPassword("qwerty");
+        admin.setPasswordDigest("qwerty");
         return admin;
     }
 }

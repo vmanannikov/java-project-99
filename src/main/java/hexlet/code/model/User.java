@@ -47,8 +47,8 @@ public class User implements UserDetails, BaseEntity {
     private String email;
 
     @Size(min = 3)
-    @Column(name = "password", nullable = false)
-    private String password;
+    @Column(nullable = false)
+    private String passwordDigest;
 
     @CreatedDate
     @Column(name = "createdAt")
@@ -65,7 +65,7 @@ public class User implements UserDetails, BaseEntity {
 
     @Override
     public String getPassword() {
-        return password;
+        return passwordDigest;
     }
 
     @Override

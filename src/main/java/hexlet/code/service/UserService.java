@@ -48,7 +48,7 @@ public class UserService {
         //var userDTO = findByEmail(userData.getEmail());
         var user = userMapper.map(userData);
         var encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
+        user.setPasswordDigest(encodedPassword);
         userRepository.save(user);
         return userMapper.map(user);
     }
