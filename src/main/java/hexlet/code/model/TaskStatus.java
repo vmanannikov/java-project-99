@@ -1,45 +1,48 @@
 package hexlet.code.model;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Column;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.GenerationType;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "tasks_statuses")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "task_statuses")
 public class TaskStatus implements BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @EqualsAndHashCode.Include
+    private Long id;
 
-    @Size(min = 1)
     @Column(unique = true)
+    @NotBlank
     private String name;
 
-    @Size(min = 1)
     @Column(unique = true)
+    @NotBlank
     private String slug;
 
-    @OneToMany(mappedBy = "taskStatus")
-    private List<Task> tasks;
-
     @CreatedDate
-    @Column(name = "createdAt")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "taskStatus", cascade = CascadeType.MERGE)
+    private List<Task> tasks;
 }

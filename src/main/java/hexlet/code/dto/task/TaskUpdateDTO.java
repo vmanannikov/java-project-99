@@ -27,5 +27,4 @@ public class TaskUpdateDTO {
     private JsonNullable<String> status;
 
     private List<Long> taskLabelIds;
-
 }

@@ -1,67 +1,66 @@
 package hexlet.code.model;
 
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+@Entity
 @Getter
 @Setter
-@Entity
-@Table(name = "users")
+@ToString(includeFieldNames = true, onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "users")
 public class User implements UserDetails, BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ToString.Include
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "firstName")
+    @ToString.Include
     private String firstName;
 
-    @Column(name = "lastName")
+    @ToString.Include
     private String lastName;
 
     @Email
-    @Column(name = "email",
-            unique = true,
-            nullable = false)
+    @Column(name = "email", unique = true)
+    @ToString.Include
     private String email;
 
-    @Size(min = 3)
-    @Column(nullable = false)
     private String passwordDigest;
 
     @CreatedDate
-    @Column(name = "createdAt")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "updatedAt")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new ArrayList<GrantedAuthority>();
-    }
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.MERGE)
+    private List<Task> tasks;
 
     @Override
     public String getPassword() {
@@ -71,6 +70,16 @@ public class User implements UserDetails, BaseEntity {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return new ArrayList<GrantedAuthority>();
     }
 
     @Override
@@ -85,11 +94,6 @@ public class User implements UserDetails, BaseEntity {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
         return true;
     }
 }

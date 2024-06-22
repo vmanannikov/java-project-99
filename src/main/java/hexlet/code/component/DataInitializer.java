@@ -9,6 +9,7 @@ import hexlet.code.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -24,15 +25,17 @@ public class DataInitializer implements ApplicationRunner {
 
     @Autowired
     private LabelRepository labelRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         var userData = new UserCreateDTO();
         userData.setEmail("manhetan@gmail.com");
-        userData.setPassword("qwerty");
+        userData.setPassword(passwordEncoder.encode("qwerty"));
         userData.setFirstName("Vadim");
         userData.setLastName("Manannikov");
-        userService.createUser(userData);
+        userService.create(userData);
 
         var taskStatuses = new HashMap<String, String>();
 
@@ -59,7 +62,5 @@ public class DataInitializer implements ApplicationRunner {
 
         labelRepository.save(l1);
         labelRepository.save(l2);
-
-        var taskMap = new HashMap<String, String>();
     }
 }

@@ -16,7 +16,6 @@ import org.instancio.Model;
 import org.instancio.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
@@ -25,8 +24,8 @@ import java.util.HashSet;
 
 @Getter
 @Component
-@Scope("prototype")
 public class ModelGenerator {
+
     private Model<User> userModel;
 
     private Model<TaskStatus> taskStatusModel;
@@ -35,7 +34,7 @@ public class ModelGenerator {
 
     private Model<Label> labelModel;
 
-    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Autowired
     private Faker faker;
@@ -67,8 +66,8 @@ public class ModelGenerator {
         taskStatusModel = Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
                 .ignore(Select.field(TaskStatus::getCreatedAt))
-                .supply(Select.field(TaskStatus::getSlug), () -> faker.internet().slug())
-                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word())
+                .supply(Select.field(TaskStatus::getSlug), () -> faker.internet().slug() + faker.internet().slug())
+                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word() + faker.lorem().word())
                 .toModel();
 
         taskModel = Instancio.of(Task.class)
@@ -100,19 +99,22 @@ public class ModelGenerator {
 
     @Bean
     public Task getTestTask() {
-        var testTask = Instancio.of(getTaskModel()).create();
+        var testTask = Instancio.of(getTaskModel())
+                .create();
 
-        var testUser = Instancio.of(getUserModel()).create();
+        var testUser = Instancio.of(getUserModel())
+                .create();
         userRepository.save(testUser);
         testTask.setAssignee(testUser);
 
-        var testTaskStatus = Instancio.of(getTaskStatusModel()).create();
+        var testTaskStatus = Instancio.of(getTaskStatusModel())
+                .create();
         taskStatusRepository.save(testTaskStatus);
         testTask.setTaskStatus(testTaskStatus);
 
-        var testLabel = Instancio.of(getLabelModel()).create();
+        var testLabel = Instancio.of(getLabelModel())
+                .create();
         labelRepository.save(testLabel);
-
         testTask.getLabels().add(testLabel);
         testLabel.getTasks().add(testTask);
 

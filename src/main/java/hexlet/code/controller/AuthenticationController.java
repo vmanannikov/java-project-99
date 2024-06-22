@@ -2,29 +2,36 @@ package hexlet.code.controller;
 
 import hexlet.code.dto.auth.AuthRequestDTO;
 import hexlet.code.util.JWTUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(path = "/api")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
-    @Autowired
-    private JWTUtils jwtUtils;
+    private final JWTUtils jwtUtils;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @PostMapping("/login")
+    @PostMapping(path = "/login")
+    @ResponseStatus(HttpStatus.OK)
     public String create(@RequestBody AuthRequestDTO auth) {
         var authentication = new UsernamePasswordAuthenticationToken(
-                auth.getUsername(), auth.getPassword());
+                auth.getUsername(),
+                auth.getPassword()
+        );
+
         authenticationManager.authenticate(authentication);
-        return jwtUtils.generateToken(auth.getUsername());
+
+        var token = jwtUtils.generateToken(auth.getUsername());
+        return token;
     }
 }

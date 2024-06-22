@@ -3,9 +3,9 @@ package hexlet.code.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.model.Label;
-import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.util.ModelGenerator;
+import hexlet.code.util.UserUtils;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
@@ -23,11 +23,12 @@ import java.util.List;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -49,18 +50,24 @@ public class LabelControllerTest {
     @Autowired
     private ModelGenerator modelGenerator;
 
+    @Autowired
+    private UserUtils userUtils;
+
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
 
     private Label testLabel;
 
-    private User testUser;
-
     @BeforeEach
     public void setUp() {
-        testUser = Instancio.of(modelGenerator.getUserModel()).create();
-        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
-        testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
+        token = jwt().jwt(builder -> builder.subject(userUtils.getAdmin().getPassword()));
+        testLabel = Instancio.of(modelGenerator.getLabelModel())
+                .create();
         labelRepository.save(testLabel);
+    }
+
+    @AfterEach
+    public void clean() {
+        modelGenerator.clean();
     }
 
     @Test
@@ -93,13 +100,19 @@ public class LabelControllerTest {
         assertThatJson(body).isNotNull().and(
                 json -> json.node("id").isEqualTo(testLabel.getId()),
                 json -> json.node("name").isEqualTo(testLabel.getName()),
-                json -> json.node("createdAt").isEqualTo(testLabel.getCreatedAt().format(modelGenerator.FORMATTER))
+                json -> json.node("createdAt").isEqualTo(testLabel.getCreatedAt().format(ModelGenerator.FORMATTER))
         );
+
+        var receivedLabel = om.readValue(body, Label.class);
+        assertThat(receivedLabel).isEqualTo(testLabel);
     }
 
     @Test
     public void testCreate() throws Exception {
-        var data = Instancio.of(modelGenerator.getLabelModel()).create();
+        var data = Instancio.of(modelGenerator.getLabelModel())
+                .create();
+
+        var labelsCount = labelRepository.count();
 
         var request = post("/api/labels")
                 .with(token)
@@ -109,17 +122,25 @@ public class LabelControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        var newLabel = labelRepository.findByName(data.getName()).get();
+        assertThat(labelRepository.count()).isEqualTo(labelsCount + 1);
 
-        assertThat(newLabel.getName()).isEqualTo(data.getName());
+        var addedLabel = labelRepository.findByName(data.getName()).get();
+
+        assertNotNull(addedLabel);
+        assertThat(labelRepository.findByName(testLabel.getName())).isPresent();
+
+        assertThat(addedLabel.getName()).isEqualTo(data.getName());
     }
 
     @Test
     public void testUpdate() throws Exception {
-        var fakeName = faker.lorem().word();
+        var oldName = testLabel.getName();
+        var newName = faker.lorem().word();
 
-        var data = new HashMap<String, String>();
-        data.put("name", fakeName);
+        var data = new HashMap<>();
+        data.put("name", newName);
+
+        var labelsCount = labelRepository.count();
 
         var request = put("/api/labels/" + testLabel.getId())
                 .with(token)
@@ -129,9 +150,12 @@ public class LabelControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
+        assertThat(labelRepository.count()).isEqualTo(labelsCount);
+
         var label = labelRepository.findById(testLabel.getId()).get();
 
-        assertThat(label.getName()).isEqualTo(fakeName);
+        assertThat(label.getName()).isEqualTo(newName);
+        assertThat(labelRepository.findByName(oldName)).isEmpty();
     }
 
     @Test
@@ -145,10 +169,5 @@ public class LabelControllerTest {
 
         assertThat(labelRepository.count()).isEqualTo(labelsCount - 1);
         assertThat(labelRepository.findById(testLabel.getId())).isEmpty();
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        labelRepository.deleteAll();
     }
 }
