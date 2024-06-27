@@ -41,4 +41,4 @@ Password: qwerty
 - **Jacoco**
 - **H2**, **PostgreSQL**
 - **Docker**
-- [Пример](https://task-manager-rokt.onrender.com) на бесплатном тарифе от **Render**
+- [Пример](https://task-manager-z0hv.onrender.com) на бесплатном тарифе от **Render**
