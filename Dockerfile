@@ -1,9 +1,9 @@
-FROM gradle:8.4.0-jdk20
+FROM gradle:8.6.0-jdk21
 
 WORKDIR /
 
-COPY / .
+COPY . .
 
-RUN gradle installDist
+RUN ./gradlew --no-daemon build
 
-CMD ./build/install/app/bin/app --spring.profiles.active=production
+CMD java -jar build/libs/app-0.0.1-SNAPSHOT.jar --spring.profiles.active=production
