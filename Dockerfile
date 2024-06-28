@@ -1,19 +1,9 @@
-FROM eclipse-temurin:21-jdk
+FROM gradle:8.4.0-jdk20
 
-LABEL authors="vmanannikov"
-
-ARG GRADLE_VERSION=8.5
-
-RUN apt-get update && apt-get install -yq unzip
-
-RUN wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip \
-    && unzip gradle-${GRADLE_VERSION}-bin.zip \
-    && rm gradle-${GRADLE_VERSION}-bin.zip
-
-WORKDIR .
+WORKDIR /
 
 COPY / .
 
-RUN ./gradlew bootRun
+RUN gradle installDist
 
 CMD ./build/install/app/bin/app --spring.profiles.active=production
