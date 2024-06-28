@@ -16,4 +16,4 @@ COPY / .
 
 RUN ./gradlew bootRun
 
-CMD ./build/install/app/bin/app
+CMD ./build/install/app/bin/app --spring.profiles.active=production
