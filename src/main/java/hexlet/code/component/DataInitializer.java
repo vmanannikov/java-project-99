@@ -52,14 +52,14 @@ public class DataInitializer implements ApplicationRunner {
         taskStatuses.put("ToPublish", "to_publish");
         taskStatuses.put("Published", "published");
 
-        taskStatuses.entrySet().stream()
-                .map(entry -> {
-                    var taskStatus = new TaskStatus();
-                    taskStatus.setName(entry.getKey());
-                    taskStatus.setSlug(entry.getValue());
-                    return taskStatus;
-                })
-                .forEach(taskStatusRepository::save);
+        for (var status : taskStatuses.entrySet()) {
+            if (taskStatusRepository.findBySlug(status.getValue()).isEmpty()) {
+                var taskStatus = new TaskStatus();
+                taskStatus.setName(status.getKey());
+                taskStatus.setSlug(status.getValue());
+                taskStatusRepository.save(taskStatus);
+            }
+        }
 
         if (labelRepository.findByName("feature").isEmpty()) {
             var l1 = new Label();
