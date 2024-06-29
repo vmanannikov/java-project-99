@@ -10,7 +10,6 @@ import hexlet.code.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -30,15 +29,12 @@ public class DataInitializer implements ApplicationRunner {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         if (userRepository.findByEmail("manhetan@gmail.com").isEmpty()) {
             var userData = new UserCreateDTO();
             userData.setEmail("manhetan@gmail.com");
-            userData.setPassword(passwordEncoder.encode("qwerty"));
+            userData.setPassword("qwerty");
             userData.setFirstName("Vadim");
             userData.setLastName("Manannikov");
             userService.create(userData);
